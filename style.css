@@ -1,0 +1,177 @@
+#wholeRegexAddon
+{
+    position:fixed;
+    bottom:22px;
+    left:0px;
+    margin: 0px;
+    z-index: 2147483647;
+    padding: 0px;
+    
+}
+#wholeRegexAddon *
+{
+    border: none;
+    border-image: none;
+    border-radius: 0;
+    box-shadow:	none;
+    clear: none;
+    content: normal;
+    float: none;
+    font: normal;
+    height: auto;
+    letter-spacing: normal;
+    line-height: normal;
+    max-width: none;
+    max-height: none;
+    min-width: 0;
+    min-height: 0;
+    opacity: 1;
+    overflow: visible;
+    page-break-inside: auto;
+    position: static;
+    text-shadow: none;
+    text-transform: none;
+    transform: none;
+    transition: none;
+    vertical-align: baseline;
+    visibility: visible;
+    white-space: normal;
+    width: auto;
+    word-spacing: normal;
+    margin: 0px;
+    z-index:2147483647;
+    padding: 0px;
+}
+#wholeRegexAddon #regexAddonHidden
+{   
+    
+    border:2px solid black;
+    display:none;
+    width:30px;
+}
+
+#wholeRegexAddon #resultsTableRegexAddon
+{
+    border-collapse:collapse;
+    width:100%;
+}
+
+#wholeRegexAddon #resultsListDivRegexAddon
+{
+    background:white;
+    display:none;
+    overflow:auto;
+    max-width:1500px;
+    max-height:500px;
+    border-top:1px solid black;
+    border-right:1px solid black;
+}
+
+#wholeRegexAddon #regexInput
+{
+    background:white;
+}
+
+#wholeRegexAddon #resultsListDivRegexAddon *
+{
+    background:white;
+}
+
+#wholeRegexAddon #resultsDivButtonRegexAddon
+{
+    border:1px solid black;
+    border-bottom:transparent;
+    background:#CACDD2;
+    display:inline-block;
+    z-index:2147483647;
+}
+
+#wholeRegexAddon #regexInput
+{
+    margin:2px;
+    padding:5px 0px;
+    font-family:monospace;
+    font-size:16px;
+}
+
+#wholeRegexAddon #hideRegexAddon
+{
+    margin: 5px 2px 1px 0px;
+    width: 19px;
+    vertical-align: top;
+    position:relative;
+    display: inline-block
+}
+
+#wholeRegexAddon #regexAddonFooter
+{
+    border:1px solid black;
+    background:#CACDD2;
+    overflow:hidden;
+    z-index:2147483647;
+    max-width:1530px;
+    position: relative;
+}
+
+#wholeRegexAddon #regexAddonFull
+{
+    
+    display:none;
+    z-index:2147483647;
+    position:fixed;
+    bottom:22px;
+    left:0px;
+}
+
+#wholeRegexAddon #regexAddonFull
+{
+    pointer-events: none;
+}
+
+#wholeRegexAddon #regexAddonFull *
+{
+    pointer-events: auto;
+}
+
+#wholeRegexAddon #pestanaDivRegexAddon
+{
+    pointer-events: none;
+}
+
+#wholeRegexAddon #pestanaDivRegexAddon *
+{
+    pointer-events: auto;
+}
+
+#wholeRegexAddon .tdCount
+{
+    border:1px solid black;
+    max-width:50px;
+    width:5px;
+    padding:2px;
+    font-family:Courier New;
+    font-size:13px;
+    color:black;
+}
+
+#wholeRegexAddon .tdResult
+{
+    border:1px solid black;
+    padding:2px;
+    font-family:Courier New;
+    font-size:13px;
+    color:green;
+}
+
+#wholeRegexAddon .pestanaRegexAddon
+{
+    border:1px solid black;
+    border-bottom: transparent;
+    width: inherit;
+    vertical-align: bottom;
+    font-family: Helvetica;
+    font-size: 14px;
+    margin-right: 2px;
+    display: inline-block;
+    padding: 0px;
+}
