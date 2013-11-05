@@ -7,9 +7,14 @@
 
 var regexLinksElements = new Array();
 var regexLinksElementsSC = new Array();
+var regexLinksElementsSCOriginal = new Array();
+var regexLinksElementsSCindex = new Array();
+var regexLinksElementsSCindexOriginal = new Array();
 var index = 0;
 var htmlOriginal = '';
 var htmlOriginalPos = '';
+var antType = 0;
+var unduplicatedTimes = 0;
 
 /*
  * 
@@ -22,6 +27,7 @@ var listener = function(e) {
     if (element && element.nodeName == 'A') {
         regexLinksElements[index] = element;
         regexLinksElementsSC[index] = getNodeSourceCode(element);
+        regexLinksElementsSCOriginal[index] = regexLinksElementsSC[index];
         console.log(regexLinksElementsSC[index]);
         element.removeAttribute("onclick");
         element.removeAttribute("onmousedown");
@@ -84,7 +90,12 @@ function findParent(tagname, el) {
 function resetTakeUrls() {
     regexLinksElements = new Array();
     regexLinksElementsSC = new Array();
+    regexLinksElementsSCOriginal = new Array();
+    regexLinksElementsSCindex = new Array();
+    regexLinksElementsSCindexOriginal = new Array();
     index = 0;
+    antType = '';
+    unduplicatedTimes = 0;
 }
 
 
@@ -100,12 +111,26 @@ function takeUrls(html) {
     handlePosHtml();
     if (document.getElementById('handImageRegexAddon').src == "http://img96.imageshack.us/img96/1623/sh9v.png") {
         document.getElementById('handImageRegexAddon').src = "http://img19.imageshack.us/img19/1624/5r7k.png";
+        document.getElementById('duplicatesButtonRegexAddon').style.display = "none";
         document.body.addEventListener('mousedown', blacklistener, false);
         document.body.addEventListener('mouseup', blacklistener, false);
         document.body.addEventListener('click', listener, false);
     }
     else {
+        if (unduplicatedTimes > 0){
+            regexLinksElementsSC = copyArray(regexLinksElementsSCOriginal);
+            regexLinksElementsSCindex = copyArray(regexLinksElementsSCindexOriginal);
+            var unTimes = unduplicatedTimes;
+            unduplicatedTimes = 0; 
+            for (var u = 0; u < unTimes; u++){
+                if (!unduplicate()) {
+                    if (u > 1) alert ("In fact, elements DO HAVE a common pattern but no so many as before");
+                    break;
+                }
+            }
+        }
         document.getElementById('handImageRegexAddon').src = "http://img96.imageshack.us/img96/1623/sh9v.png";
+        document.getElementById('duplicatesButtonRegexAddon').style.display = "inline-block";
         document.body.removeEventListener('mousedown', blacklistener, false);
         document.body.removeEventListener('mouseup', blacklistener, false);
         document.body.removeEventListener('click', listener, false);
@@ -114,6 +139,58 @@ function takeUrls(html) {
     }
     return false;
 }
+
+function copyArray(array){
+    var result = new Array();
+    for (var i = 0; i < array.length; i++){
+        result[i] = array[i];
+    }
+    return result;
+}
+
+function unduplicate() {
+    antType = '';
+    if (regexLinksElementsSC[0]) {
+        var auxArray = copyArray(regexLinksElementsSC);
+        for (var i = 0; i < regexLinksElementsSC.length; i++){
+            var element = regexLinksElementsSC[i];
+            var e = addPreviousElement(element, i);
+            if (e){
+                element = e;
+                regexLinksElementsSC[i] = element;
+            }
+            else {
+                regexLinksElementsSC = copyArray(auxArray);
+                alert ("Elements do not have a common pattern");
+                return false;
+            }
+        }
+        unduplicatedTimes++;
+        document.getElementById('regexInput').value = getSuggestedRegex();
+        return true;
+    }
+    else{
+        alert ("No elements on selection for doing this");
+    }
+    return false;
+}
+
+function addPreviousElement(element, pos) {
+    
+    if (regexLinksElementsSCindex[pos]){
+        var htmlAux = htmlOriginalPos;
+        htmlAux = htmlAux.substring(0,regexLinksElementsSCindex[pos]);
+        var piece = htmlAux.replace(/^[\s\S]*(<(\/?[\w\\-]+)[^>]*>[^><]*)$/i,"$1");
+        var type = htmlAux.replace(/^[\s\S]*(<(\/?[\w\\-]+)[^>]*>[^><]*)$/i,"$2");
+       // alert (antType + "  " + type);
+        if (antType != type && antType != '') return false;
+        antType = type;
+        element = piece + element;
+        regexLinksElementsSCindex[pos] = regexLinksElementsSCindex[pos] - piece.length;
+    }
+    return element;
+}
+
 
 /*
  * 
@@ -276,6 +353,7 @@ function addElementToRegex(regex, element) {
     if (breaker) {
         breaker = false;
         var resultCua = '';
+        result = result.replace(/[\s\t]+$/, "");
         result = result.replace(/(███SPACES███|███TEXT███)+$/, "");
         var lastRegex = tagsRegex.length - 1;
         var lastElement = tagsElement.length - 1;
@@ -514,10 +592,10 @@ function getNodePos(node, parentId) {
  */
 function handlePosHtml(){
     htmlOriginalPos = htmlOriginal;
-    htmlOriginalPos = htmlOriginalPos.replace(/<script[^>]*>[\s\S]*?<\/script>/ig, '');
-    htmlOriginalPos = htmlOriginalPos.replace(/<noscript[^>]*>[\s\S]*?<\/noscript>/ig, '');
-    htmlOriginalPos = htmlOriginalPos.replace(/<\!--[\s\S]*?-->/ig, '');
-    htmlOriginalPos = htmlOriginalPos.replace(/<xmp[^>]*>[\s\S]*?<\/xmp>/ig, '');
+    htmlOriginalPos = htmlOriginalPos.replace(/(<script[^>]*>)[\s\S]*?(<\/script>)/ig, "$1███NOT_MATCHING███$2");
+    htmlOriginalPos = htmlOriginalPos.replace(/(<noscript[^>]*>)[\s\S]*?(<\/noscript>)/ig, "$1███NOT_MATCHING███$2");
+    htmlOriginalPos = htmlOriginalPos.replace(/(<\!--)[\s\S]*?(-->)/ig, "$1███NOT_MATCHING███$2");
+    htmlOriginalPos = htmlOriginalPos.replace(/(<xmp[^>]*>)[\s\S]*?(<\/xmp>)/ig, "$1███NOT_MATCHING███$2");
 }
 
 /*
@@ -545,33 +623,53 @@ function getParentElementId(node){
  */
 function getNodeSourceCode(node) {
     var htmlAux = htmlOriginalPos;
+    var htmlIndexAux = htmlAux;
+    regexLinksElementsSCindex[index] = 0;
     
     var parentId = getParentElementId(node);
     if (parentId){
         var attrRegex = ' id\\s*=\\s*([\'"]?)' + parentId;
         attrRegex = new RegExp(attrRegex, "i");
+        var attrRegexIndex = '';
         var comaType = htmlAux.match(attrRegex);
         if (comaType && comaType[1]){
             comaType = comaType[1];
             attrRegex = '^[\\s\\S]*?(<[^>]* id\\s*=\\s*'+ comaType + parentId + comaType + '[^>]*>)';
+            attrRegexIndex = '^([\\s\\S]*?)(<[^>]* id\\s*=\\s*'+ comaType + parentId + comaType + '[^>]*>)[\\s\\S]*$';
         }
         else{
             attrRegex = '^[\\s\\S]*?(<[^>]* id\\s*=\\s*'+ parentId + '(>| [^>]*>))';
+            attrRegexIndex = '^([\\s\\S]*?)(<[^>]* id\\s*=\\s*'+ parentId + '(>| [^>]*>))[\\s\\S]*$';
         }
-        attrRegex = new RegExp(attrRegex, "i");;
+        attrRegex = new RegExp(attrRegex, "i");
+        attrRegexIndex = new RegExp(attrRegexIndex, "i");
         htmlAux = htmlAux.replace(attrRegex, "$1");
+        htmlIndexAux = htmlIndexAux.replace(attrRegexIndex, "$1");
+        regexLinksElementsSCindex[index] = regexLinksElementsSCindex[index] + htmlIndexAux.length;
     }
     var position = getNodePos(node, parentId);
-    console.log("Position: " + position);
+    //console.log("Position: " + position);
     for (var j = 0; j <= position; j++) {
+        htmlIndexAux = htmlAux;
+        
         var attrRegex = '^[\\s\\S]*?(<' + node.tagName + '[\\s\\n][^>]*>)';
+        var attrRegexIndex = '^([\\s\\S]*?)(<' + node.tagName + '[\\s\\n][^>]*>)[\\s\\S]*$';
         attrRegex = new RegExp(attrRegex, "i");
-        if (j == position)
+        attrRegexIndex = new RegExp(attrRegexIndex, "i");
+        if (j == position){
             htmlAux = htmlAux.replace(attrRegex, "$1");
-        else
+            htmlIndexAux = htmlIndexAux.replace(attrRegexIndex, "$1");
+        }
+        else{
             htmlAux = htmlAux.replace(attrRegex, '');
+            htmlIndexAux = htmlIndexAux.replace(attrRegexIndex, "$1$2");
+            
+        }
+        regexLinksElementsSCindex[index] = regexLinksElementsSCindex[index] + htmlIndexAux.length;
     }
-
+    
+    if (regexLinksElementsSCindex[index]) regexLinksElementsSCindexOriginal[index] = regexLinksElementsSCindex[index];
+    
     htmlAux = getWholeElement(htmlAux, node.tagName);
 
     return htmlAux;

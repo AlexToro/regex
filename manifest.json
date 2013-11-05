@@ -1,0 +1,10 @@
+{
+    "manifest_version": 2,
+    "content_scripts": [ {
+        "matches": ["http://*/*", "https://*/*"],
+        "js": [ "RegexAddon.user.js","utils.user.js","takeUrls.user.js","phpToJavascriptRegex.user.js"],
+        "css": ["style.css"]
+    } ],
+    "name": "Regex Addon",
+    "version": "1"
+}

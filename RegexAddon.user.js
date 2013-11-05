@@ -3,10 +3,10 @@
 // @namespace   RegexAddon
 // @version     1
 // @include     *
-// @require     utils.user.js
-// @require     takeUrls.user.js
-// @require     phpToJavascriptRegex.user.js
-// @resource    regexAddonCSS style.css
+// @require     /home/alex/.mozilla/firefox/pvwmvtab.default/gm_scripts/RegexAddon/utils.user.js
+// @require     /home/alex/.mozilla/firefox/pvwmvtab.default/gm_scripts/RegexAddon/takeUrls.user.js
+// @require     /home/alex/.mozilla/firefox/pvwmvtab.default/gm_scripts/RegexAddon/phpToJavascriptRegex.user.js
+// @resource    regexAddonCSS /home/alex/.mozilla/firefox/pvwmvtab.default/gm_scripts/RegexAddon/style.css
 // @grant       GM_addStyle
 // @grant       GM_getResourceText
 // ==/UserScript==
@@ -18,8 +18,11 @@
 //////////////////////////////////////////////////// HTML FRAMEWORK ///////////////////////////////////////////////////////////
 //////////////////////////////////////////////////// HTML FRAMEWORK ///////////////////////////////////////////////////////////
 
-var newCSS = GM_getResourceText ("regexAddonCSS");
-GM_addStyle (newCSS);
+if (!(navigator.userAgent.toLowerCase().indexOf('chrome') > -1)){
+    var newCSS = GM_getResourceText ("regexAddonCSS");
+    GM_addStyle (newCSS);
+}
+
 
 if (window.self === window.top) {
     createGlobalDiv();
@@ -28,7 +31,6 @@ if (window.self === window.top) {
     var htmlOriginal = false;
     document.getElementById('regexAddonHidden').style.display = "block";
 }
-
 
 function createGlobalDiv() {
     var wholeDiv = document.createElement('div');
@@ -71,7 +73,15 @@ function addResultsTag(element) {
     handButton.id = "handButtonRegexAddon";
     handButton.className = 'pestanaRegexAddon';
     handButton.appendChild(handImage);
-    handButton.innerHTML += '<code> </code>';
+    
+    var duplicatesImage = document.createElement('img');
+    duplicatesImage.id = 'duplicatesImageRegexAddon';
+    duplicatesImage.src = 'http://img30.imageshack.us/img30/7378/i8mv.png';
+    
+    var duplicatesButton = document.createElement('button');
+    duplicatesButton.id = "duplicatesButtonRegexAddon";
+    duplicatesButton.className = 'pestanaRegexAddon';
+    duplicatesButton.appendChild(duplicatesImage);
     
     var portapapelesImage = document.createElement('img');
     portapapelesImage.id = 'portapapelesImageRegexAddon';
@@ -81,7 +91,6 @@ function addResultsTag(element) {
     portapapelesButton.id = "portapapelesButtonRegexAddon";
     portapapelesButton.className = 'pestanaRegexAddon';
     portapapelesButton.appendChild(portapapelesImage);
-    portapapelesButton.innerHTML += '<code> </code>';
     
     var resetImage = document.createElement('img');
     resetImage.id = 'resetImageRegexAddon';
@@ -91,11 +100,11 @@ function addResultsTag(element) {
     resetButton.id = "resetButtonRegexAddon";
     resetButton.className = 'pestanaRegexAddon';
     resetButton.appendChild(resetImage);
-    resetButton.innerHTML += '<code> </code>';
     
     var pestanaDiv = document.createElement('div');
     pestanaDiv.id = "pestanaDivRegexAddon";
     pestanaDiv.appendChild(handButton);
+    pestanaDiv.appendChild(duplicatesButton);
     pestanaDiv.appendChild(portapapelesButton);
     pestanaDiv.appendChild(resetButton);
     pestanaDiv.appendChild(resultsExpand);
@@ -139,6 +148,7 @@ function addRegexHtmlInput() {
     addHandButtonListener();
     addResetButtonListener();
     addPortapapelesButtonListener();
+    addDuplicatesButtonListener();
 }
 
 
@@ -208,6 +218,20 @@ function addResultTopInfoToList(maxResults) {
 //////////////////////////////////////////////////// LISTENERS ///////////////////////////////////////////////////////////
 //////////////////////////////////////////////////// LISTENERS ///////////////////////////////////////////////////////////
 //////////////////////////////////////////////////// LISTENERS ///////////////////////////////////////////////////////////
+
+/*
+ * 
+ */
+function addDuplicatesButtonListener() {
+    var duplicatesButton = document.getElementById("duplicatesButtonRegexAddon");
+    duplicatesButton.addEventListener('click', unduplicateAndExecute, true);
+}
+
+function unduplicateAndExecute() {
+    if (unduplicate()){
+        selectMatch();
+    }
+}
 
 /*
  * 
