@@ -112,9 +112,9 @@ function takeUrls(html) {
     if (document.getElementById('handImageRegexAddon').src == "http://img96.imageshack.us/img96/1623/sh9v.png") {
         document.getElementById('handImageRegexAddon').src = "http://img19.imageshack.us/img19/1624/5r7k.png";
         document.getElementById('duplicatesButtonRegexAddon').style.display = "none";
-        document.body.addEventListener('mousedown', blacklistener, false);
+        document.body.addEventListener('mousedown', listener, false);
         document.body.addEventListener('mouseup', blacklistener, false);
-        document.body.addEventListener('click', listener, false);
+        document.body.addEventListener('click', blacklistener, false);
     }
     else {
         if (unduplicatedTimes > 0){
@@ -131,9 +131,9 @@ function takeUrls(html) {
         }
         document.getElementById('handImageRegexAddon').src = "http://img96.imageshack.us/img96/1623/sh9v.png";
         document.getElementById('duplicatesButtonRegexAddon').style.display = "inline-block";
-        document.body.removeEventListener('mousedown', blacklistener, false);
+        document.body.removeEventListener('mousedown', listener, false);
         document.body.removeEventListener('mouseup', blacklistener, false);
-        document.body.removeEventListener('click', listener, false);
+        document.body.removeEventListener('click', blacklistener, false);
         document.getElementById('regexInput').value = getSuggestedRegex();
         return true;
     }
