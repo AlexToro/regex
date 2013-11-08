@@ -29,6 +29,7 @@ if (window.self === window.top) {
     addRegexShowButton();
     addRegexHtmlInput();
     var htmlOriginal = false;
+    var htmlAlternative = false;
     document.getElementById('regexAddonHidden').style.display = "block";
 }
 
@@ -101,6 +102,11 @@ function addResultsTag(element) {
     resetButton.className = 'pestanaRegexAddon';
     resetButton.appendChild(resetImage);
     
+    var domButton = document.createElement('button');
+    domButton.id = "domButtonRegexAddon";
+    domButton.className = 'pestanaRegexAddon';
+    domButton.innerHTML = 'DOM';
+    
     var pestanaDiv = document.createElement('div');
     pestanaDiv.id = "pestanaDivRegexAddon";
     pestanaDiv.appendChild(handButton);
@@ -108,6 +114,7 @@ function addResultsTag(element) {
     pestanaDiv.appendChild(portapapelesButton);
     pestanaDiv.appendChild(resetButton);
     pestanaDiv.appendChild(resultsExpand);
+    pestanaDiv.appendChild(domButton);
     
 
     element.appendChild(pestanaDiv);
@@ -149,6 +156,7 @@ function addRegexHtmlInput() {
     addResetButtonListener();
     addPortapapelesButtonListener();
     addDuplicatesButtonListener();
+    addDomButtonListener();
 }
 
 
@@ -219,8 +227,29 @@ function addResultTopInfoToList(maxResults) {
 //////////////////////////////////////////////////// LISTENERS ///////////////////////////////////////////////////////////
 //////////////////////////////////////////////////// LISTENERS ///////////////////////////////////////////////////////////
 
+function addDomButtonListener() {
+    var domButton = document.getElementById("domButtonRegexAddon");
+    domButton.addEventListener('click', changeDom, true);
+}
+
+function changeDom() {
+    var text = document.getElementById('domButtonRegexAddon').innerHTML;
+    if (text == "DOM"){
+        document.getElementById('domButtonRegexAddon').innerHTML = "USING DOM!";
+        document.getElementById('domButtonRegexAddon').style.color = "red";
+    }
+    else {
+        document.getElementById('domButtonRegexAddon').innerHTML = "DOM";
+        document.getElementById('domButtonRegexAddon').style.color = "black";
+    }
+    resetAddonToIniDOM();
+}
+
+
 /*
  * 
+ * listener of duplicatesButton
+ * Tries to make a more specific regex by adding elements before it
  */
 function addDuplicatesButtonListener() {
     var duplicatesButton = document.getElementById("duplicatesButtonRegexAddon");
@@ -232,6 +261,8 @@ function unduplicateAndExecute() {
         selectMatch();
     }
 }
+
+
 
 /*
  * 
@@ -254,6 +285,18 @@ function addResetButtonListener() {
 }
 
 function resetAddonToIni(){
+    resetTakeUrls();
+    document.getElementsByTagName('body')[0].innerHTML = htmlOriginal;
+    handleIframes();
+    cleanResultsList();
+    document.getElementById('resultsListDivRegexAddon').style.display = "none";
+    document.getElementById('resultsLabelRegexAddon').innerHTML = 'Results';
+}
+
+function resetAddonToIniDOM(){
+    var auxHTML = htmlOriginal;
+    htmlOriginal = htmlAlternative;
+    htmlAlternative = auxHTML;
     resetTakeUrls();
     document.getElementsByTagName('body')[0].innerHTML = htmlOriginal;
     handleIframes();
@@ -325,6 +368,7 @@ function addShowButtonListener() {
 function showAddon() {
     var auxSrc = document.getElementById('regexAddonHidden').src;
     document.getElementById('regexAddonHidden').src = "http://img248.imageshack.us/img248/7527/8jj.gif";
+    htmlAlternative = document.getElementsByTagName('body')[0].innerHTML;
     if (!htmlOriginal){
         htmlOriginal = getBodySourceCode(document.URL);
     }

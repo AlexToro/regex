@@ -140,6 +140,13 @@ function takeUrls(html) {
     return false;
 }
 
+
+/*
+ * @param {Array} array
+ * @returns {Array} result
+ * 
+ * make a copy of an Array
+ */
 function copyArray(array){
     var result = new Array();
     for (var i = 0; i < array.length; i++){
@@ -148,6 +155,13 @@ function copyArray(array){
     return result;
 }
 
+
+/*
+ * 
+ * @returns {Boolean}
+ * 
+ * Tries to improve regex by adding elements before it
+ */
 function unduplicate() {
     antType = '';
     if (regexLinksElementsSC[0]) {
@@ -175,6 +189,13 @@ function unduplicate() {
     return false;
 }
 
+/*
+ * @param {String} element
+ * @param {Integer} pos
+ * @returns {String} element
+ * 
+ * returns the previus tag and text before the element
+ */
 function addPreviousElement(element, pos) {
     
     if (regexLinksElementsSCindex[pos]){
@@ -606,10 +627,10 @@ function handlePosHtml(){
  * return the id of the first parent element with id
  */
 function getParentElementId(node){
-    while (node && !node.id) {
+    while (node && !node.id && node.nodeName != 'BODY') {
         node = node.parentNode;
     }
-    if (node && node.id){
+    if (node && node.id && node.nodeName != 'BODY'){
         return node.id;
     }
 }
@@ -648,7 +669,7 @@ function getNodeSourceCode(node) {
         regexLinksElementsSCindex[index] = regexLinksElementsSCindex[index] + htmlIndexAux.length;
     }
     var position = getNodePos(node, parentId);
-    //console.log("Position: " + position);
+    console.log("Position: " + position + " - Partent: " + parentId);
     for (var j = 0; j <= position; j++) {
         htmlIndexAux = htmlAux;
         
