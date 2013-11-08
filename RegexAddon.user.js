@@ -3,10 +3,10 @@
 // @namespace   RegexAddon
 // @version     1
 // @include     *
-// @require     /home/alex/.mozilla/firefox/pvwmvtab.default/gm_scripts/RegexAddon/utils.user.js
-// @require     /home/alex/.mozilla/firefox/pvwmvtab.default/gm_scripts/RegexAddon/takeUrls.user.js
-// @require     /home/alex/.mozilla/firefox/pvwmvtab.default/gm_scripts/RegexAddon/phpToJavascriptRegex.user.js
-// @resource    regexAddonCSS /home/alex/.mozilla/firefox/pvwmvtab.default/gm_scripts/RegexAddon/style.css
+// @require     utils.user.js
+// @require     takeUrls.user.js
+// @require     phpToJavascriptRegex.user.js
+// @resource    regexAddonCSS style.css
 // @grant       GM_addStyle
 // @grant       GM_getResourceText
 // ==/UserScript==
@@ -297,12 +297,7 @@ function resetAddonToIniDOM(){
     var auxHTML = htmlOriginal;
     htmlOriginal = htmlAlternative;
     htmlAlternative = auxHTML;
-    resetTakeUrls();
-    document.getElementsByTagName('body')[0].innerHTML = htmlOriginal;
-    handleIframes();
-    cleanResultsList();
-    document.getElementById('resultsListDivRegexAddon').style.display = "none";
-    document.getElementById('resultsLabelRegexAddon').innerHTML = 'Results';
+    resetAddonToIni();
 }
 
 /*
@@ -368,9 +363,12 @@ function addShowButtonListener() {
 function showAddon() {
     var auxSrc = document.getElementById('regexAddonHidden').src;
     document.getElementById('regexAddonHidden').src = "http://img248.imageshack.us/img248/7527/8jj.gif";
-    htmlAlternative = document.getElementsByTagName('body')[0].innerHTML;
+    
     if (!htmlOriginal){
         htmlOriginal = getBodySourceCode(document.URL);
+    }
+    if (!htmlAlternative){
+        htmlAlternative = document.getElementsByTagName('body')[0].innerHTML;
     }
     document.getElementById('regexAddonHidden').style.display = "none";
     document.getElementById('regexAddonHidden').src = auxSrc;
