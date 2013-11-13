@@ -260,7 +260,7 @@ function finishSuggestedRegex(regex) {
  * escape especial characters of the regex
  */
 function escapeRegex(regex) {
-    regex = regex.replace(/(\$|\(|\)|\*|\+|\.|\[|\]|\?|\\|\^|\{|\||@)/g, "\\" + "$1");
+    regex = regex.replace(/(\!|\$|\(|\)|\*|\+|\.|\[|\]|\?|\\|\^|\{|\||@)/g, "\\" + "$1");
     return regex;
 }
 
@@ -376,6 +376,7 @@ function addElementToRegex(regex, element) {
         var resultCua = '';
         result = result.replace(/[\s\t]+$/, "");
         result = result.replace(/(███SPACES███|███TEXT███)+$/, "");
+        result = result.replace(/[\s\t]+$/, "");
         var lastRegex = tagsRegex.length - 1;
         var lastElement = tagsElement.length - 1;
         while (i <= lastRegex && i <= lastElement) {
@@ -432,6 +433,7 @@ function addElementToRegex(regex, element) {
         }
         resultCua = resultCua.replace(/^[\s\t]+/, "");
         resultCua = resultCua.replace(/^(███SPACES███|███TEXT███)+/, "");
+        resultCua = resultCua.replace(/^[\s\t]+/, "");
         result += '███NOT_MATCHING███' + resultCua;
 
     }

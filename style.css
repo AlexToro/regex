@@ -165,11 +165,13 @@
 
 #wholeRegexAddon .pestanaRegexAddon
 {
+    background: #CACDD2;
     border:1px solid black;
     border-bottom: transparent;
     width: inherit;
     vertical-align: bottom;
     font-family: Helvetica;
+    color: black;
     font-size: 14px;
     margin-right: 2px;
     display: inline-block;
