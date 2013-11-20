@@ -592,10 +592,10 @@ function addTextRegex(regex, text, type) {
  * E.g: <div><a><b><span><a thatisourelement>
  * In this case it is in second position... because only have another a before it.
  */
-function getNodePos(node, parentId) {
+function getNodePos(node, parent) {
     var cointainer = '';
-    if (parentId){
-        cointainer = document.getElementById(parentId);
+    if (parent){
+        cointainer = parent;
     }
     else {
         cointainer = document.getElementsByTagName('body')[0];
@@ -629,14 +629,50 @@ function handlePosHtml(){
  * return the id of the first parent element with id
  */
 function getParentElementId(node){
-    while (node && !node.id && node.nodeName != 'BODY') {
+    var idunique = true;
+    if (node.id) idunique = checkIdIsUnique(node.id);
+    while (node && (!node.id || !idunique) && node.nodeName != 'BODY') {
         node = node.parentNode;
+        if (node.id) idunique = checkIdIsUnique(node.id);
     }
     if (node && node.id && node.nodeName != 'BODY'){
         return node.id;
     }
 }
 
+function getParentElement(node){
+    var idunique = true;
+    if (node.id) idunique = checkIdIsUnique(node.id);
+    while (node && (!node.id || !idunique) && node.nodeName != 'BODY') {
+        node = node.parentNode;
+        if (node.id) idunique = checkIdIsUnique(node.id);
+    }
+    if (node && node.id && node.nodeName != 'BODY'){
+        return node;
+    }
+}
+
+/*
+ * 
+ * @param {String} id
+ * @returns {Boolean}
+ * 
+ * check if an ID is unique 
+ * HTML rules says that ids must be unique, but there are some HTML that are wrong and uses duplicated ids
+ * this function is used only for handle these wrong HTMLs
+ */
+function checkIdIsUnique(id){
+    var htmlAux = htmlOriginalPos;
+    var attrRegex = '<[^>]* id\\s*=\\s*[\'"]?' + id + '[\'"]?(?:>| [^>]*>)';
+    attrRegex = new RegExp(attrRegex, "ig");
+    var match = htmlAux.match(attrRegex);
+    if (match){
+        if (match.length > 1){
+            return false;
+        }
+        return true;
+    }
+}
 /*
  * 
  * @param {node} node
@@ -648,6 +684,12 @@ function getNodeSourceCode(node) {
     var htmlAux = htmlOriginalPos;
     var htmlIndexAux = htmlAux;
     regexLinksElementsSCindex[index] = 0;
+    
+    if (document.getElementById('domButtonRegexAddon').innerHTML == "USING DOM!"){
+        //WITH DOM... we only have to do this
+        regexLinksElementsSCindex[index] = htmlAux.indexOf(node.outerHTML);
+        return node.outerHTML;
+    }
     
     var parentId = getParentElementId(node);
     if (parentId){
@@ -670,7 +712,8 @@ function getNodeSourceCode(node) {
         htmlIndexAux = htmlIndexAux.replace(attrRegexIndex, "$1");
         regexLinksElementsSCindex[index] = regexLinksElementsSCindex[index] + htmlIndexAux.length;
     }
-    var position = getNodePos(node, parentId);
+    var parent = getParentElement(node);
+    var position = getNodePos(node, parent);
     console.log("Position: " + position + " - Partent: " + parentId);
     for (var j = 0; j <= position; j++) {
         htmlIndexAux = htmlAux;
