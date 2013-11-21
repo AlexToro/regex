@@ -539,8 +539,9 @@ function takeTagType(stringTag) {
  * This function does not only handle text like >Click here< but also text from attributes values.
  */
 function addTextRegex(regex, text, type) {
-    if (regex == '███NOT_MATCHING███')
+    if (regex == '███NOT_MATCHING███'){
         return regex;
+    }
     var innerRegex = "";
     var innerTEXT = "";
     var originalRegex = "";
@@ -566,7 +567,10 @@ function addTextRegex(regex, text, type) {
         textlastIndex = innerTEXT.length - 1;
     }
     var result = '';
-    if (text != originalRegex) {
+    if (innerRegex.match(/███NOT_MATCHING███/)){
+        result = startRegex + "███NOT_MATCHING███";
+    }
+    else if (text != originalRegex) {
         result = startRegex + "███" + type + "███" + endRegex;
     }
     else
