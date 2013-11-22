@@ -27,6 +27,7 @@ function phpToJavascriptRegex(regex) {
         if (!checkEscapedDelimiters(regexContent, delimiter))
             return;
         var modifiers = 'g';  //This set the behavior as preg_match_all as default instead of a preg_match
+        regexContent = regexContent.replace(/\\\\/g, '\\');
         if (regexParts[2]) {
             var extraModifiers = regexParts[2];
             for (var m = 0; m < extraModifiers.length; m++) {
