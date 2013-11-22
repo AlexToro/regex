@@ -41,6 +41,7 @@
     margin: 0px;
     z-index:2147483647;
     padding: 0px;
+    text-align: left;
 }
 #wholeRegexAddon #regexAddonHidden
 {   
