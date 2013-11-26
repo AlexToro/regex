@@ -271,7 +271,7 @@ function escapeRegex(regex) {
  * do the finishSuggestedRegex function for the tags of the regex. <a href="...">
  */
 function finishSuggestedRegexTag(tag) {
-    var attributes = tag.match(/ [\w\\-]+\s*=\s*["']/g);
+    var attributes = tag.match(/\s* [\w\\-]+\s*=\s*["']/g);
     if (attributes) {
         for (var i = 0; i < attributes.length; i++) {
             var attrIni = (attributes[i]);
@@ -282,15 +282,37 @@ function finishSuggestedRegexTag(tag) {
             var thisAttr = tag.match(attrRegex);
             if (thisAttr[0]) {
                 var thisReplace = thisAttr[0].replace(/███ATTR███/g, "[^" + comaType + "]*");
-                thisReplace = thisReplace.replace(/^ /, ' [^>]*');
+                thisReplace = thisReplace.replace(/^\s* /, ' [^>]*');
                 tag = tag.replace(thisAttr[0], thisReplace);
             }
         }
+        if (tag.match(/^<\w/)) {
+            tag = tag.replace(/[\s\n]*>$/, "[^>]*>");
+        }
     }
-    tag = tag.replace(/███ATTR███/g, "[^\\s>]*");
-    if (tag.match(/^<\w/)) {
-        tag = tag.replace(/[\s\n]*>$/, "[^>]*>");
+    else {
+        attributes = tag.match(/\s* [\w\\-]+\s*=/);
+        if (attributes) {
+            for (var i = 0; i < attributes.length; i++) {
+                var attrIni = attributes[i];
+                var comaType = attrIni[attrIni.length - 1];
+                var attrRegex = attrIni + '\s*[^"\'\s>]+';
+                attrRegex = new RegExp(attrRegex, "i");
+                
+                var thisAttr = tag.match(attrRegex);
+                if (thisAttr[0]) {
+                    var thisReplace = thisAttr[0].replace(/███ATTR███/g, "[^\\s>]*");
+                    thisReplace = thisReplace.replace(/^\s* /, ' [^>]*');
+                    tag = tag.replace(thisAttr[0], thisReplace);
+                }
+            }
+        }
+        if (tag.match(/^<\w/)) {
+            tag = tag.replace(/[\s\n]*>$/, "(?: [^>]*)?>");
+        }
     }
+    
+    
     return tag;
 }
 
